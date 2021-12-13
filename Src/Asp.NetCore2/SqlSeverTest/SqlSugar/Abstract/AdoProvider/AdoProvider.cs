@@ -60,6 +60,7 @@ namespace SqlSugar
         public virtual CommandType CommandType { get; set; }
         public virtual bool IsEnableLogEvent { get; set; }
         public virtual bool IsClearParameters { get; set; }
+        public virtual bool NoNamedParameters { get; set; }
         public virtual Action<string, SugarParameter[]> LogEventStarting => this.Context.CurrentConnectionConfig.AopEvents?.OnLogExecuting;
         public virtual Action<string, SugarParameter[]> LogEventCompleted => this.Context.CurrentConnectionConfig.AopEvents?.OnLogExecuted;
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL => this.Context.CurrentConnectionConfig.AopEvents?.OnExecutingChangeSql;
@@ -330,6 +331,10 @@ namespace SqlSugar
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
+                if (NoNamedParameters)
+                {
+                    ConvertNamedParameter(ref sql, ref parameters);
+                }
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
@@ -363,6 +368,10 @@ namespace SqlSugar
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
+                if (!isSp && NoNamedParameters)
+                {
+                    ConvertNamedParameter(ref sql, ref parameters);
+                }
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
@@ -386,6 +395,21 @@ namespace SqlSugar
                 throw ex;
             }
         }
+        private void ConvertNamedParameter(ref string sql, ref SugarParameter[] parameters)
+        {
+            List<SugarParameter> para = new List<SugarParameter>();
+            string tempSql = sql;
+            while (tempSql.Contains(")")) tempSql = tempSql.Replace(")", " ");
+            while (tempSql.Contains(",")) tempSql = tempSql.Replace(",", " ");
+            var matches = Regex.Matches(tempSql, "@[^\\s]*");
+            for (int i = 0; i < matches.Count; i++)
+            {
+                var paraName = matches[i].Groups[0].Value.Trim();
+                para.Add(parameters.FirstOrDefault(x => x.ParameterName == paraName));
+                sql = sql.Replace(paraName, "?");
+            }
+            parameters = para.ToArray();
+        }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] parameters)
         {
             try
@@ -394,6 +418,10 @@ namespace SqlSugar
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
+                if (NoNamedParameters)
+                {
+                    ConvertNamedParameter(ref sql, ref parameters);
+                }
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
@@ -429,6 +457,10 @@ namespace SqlSugar
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
+                if (NoNamedParameters)
+                {
+                    ConvertNamedParameter(ref sql, ref parameters);
+                }
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
@@ -464,6 +496,10 @@ namespace SqlSugar
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
+                if (NoNamedParameters)
+                {
+                    ConvertNamedParameter(ref sql, ref parameters);
+                }
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
@@ -501,6 +537,10 @@ namespace SqlSugar
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
+                if (NoNamedParameters)
+                {
+                    ConvertNamedParameter(ref sql, ref parameters);
+                }
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
@@ -538,6 +578,10 @@ namespace SqlSugar
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
+                if (NoNamedParameters)
+                {
+                    ConvertNamedParameter(ref sql, ref parameters);
+                }
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);

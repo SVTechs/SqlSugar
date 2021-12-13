@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Odbc;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -114,6 +115,131 @@ namespace SqlSugar
                 ds = new DataSet();
             }
             using (SqlDataReader dr = command.ExecuteReader())
+            {
+                do
+                {
+                    var dt = new DataTable();
+                    var columns = dt.Columns;
+                    var rows = dt.Rows;
+                    for (int i = 0; i < dr.FieldCount; i++)
+                    {
+                        string name = dr.GetName(i).Trim();
+                        if (!columns.Contains(name))
+                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    }
+
+                    while (dr.Read())
+                    {
+                        DataRow daRow = dt.NewRow();
+                        for (int i = 0; i < columns.Count; i++)
+                        {
+                            daRow[columns[i].ColumnName] = dr.GetValue(i);
+                        }
+                        dt.Rows.Add(daRow);
+                    }
+                    ds.Tables.Add(dt);
+                } while (dr.NextResult());
+            }
+        }
+    }
+    /// <summary>
+    /// 数据填充器
+    /// </summary>
+    public class OdbcDataAdapter : IDataAdapter
+    {
+        private OdbcCommand command;
+        private string Odbc;
+        private OdbcConnection _OdbcConnection;
+
+        /// <summary>
+        /// OdbcDataAdapter
+        /// </summary>
+        /// <param name="command"></param>
+        public OdbcDataAdapter(OdbcCommand command)
+        {
+            this.command = command;
+        }
+
+        public OdbcDataAdapter()
+        {
+
+        }
+
+        /// <summary>
+        /// OdbcDataAdapter
+        /// </summary>
+        /// <param name="Odbc"></param>
+        /// <param name="_OdbcConnection"></param>
+        public OdbcDataAdapter(string Odbc, OdbcConnection _OdbcConnection)
+        {
+            this.Odbc = Odbc;
+            this._OdbcConnection = _OdbcConnection;
+        }
+
+        /// <summary>
+        /// SelectCommand
+        /// </summary>
+        public OdbcCommand SelectCommand
+        {
+            get
+            {
+                if (this.command == null)
+                {
+                    this.command = new OdbcCommand(this.Odbc, this._OdbcConnection);
+                }
+                return this.command;
+            }
+            set
+            {
+                this.command = value;
+            }
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="dt"></param>
+        public void Fill(DataTable dt)
+        {
+            if (dt == null)
+            {
+                dt = new DataTable();
+            }
+            var columns = dt.Columns;
+            var rows = dt.Rows;
+            using (OdbcDataReader dr = command.ExecuteReader())
+            {
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    string name = dr.GetName(i).Trim();
+                    if (!columns.Contains(name))
+                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                }
+
+                while (dr.Read())
+                {
+                    DataRow daRow = dt.NewRow();
+                    for (int i = 0; i < columns.Count; i++)
+                    {
+                        daRow[columns[i].ColumnName] = dr.GetValue(i);
+                    }
+                    dt.Rows.Add(daRow);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Fill(DataSet ds)
+        {
+            if (ds == null)
+            {
+                ds = new DataSet();
+            }
+            using (OdbcDataReader dr = command.ExecuteReader())
             {
                 do
                 {

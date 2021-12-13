@@ -558,6 +558,11 @@ namespace SqlSugar
                 return result;
             }
         }
+        public virtual string GetPk()
+        {
+            var pkColumn = this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.FirstOrDefault(x => x.IsPrimarykey);
+            return pkColumn?.DbColumnName;
+        }
         public virtual string GetSelectValueByString()
         {
             string result;

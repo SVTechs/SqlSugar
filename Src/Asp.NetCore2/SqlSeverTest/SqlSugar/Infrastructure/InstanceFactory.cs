@@ -158,7 +158,7 @@ namespace SqlSugar
             }
             else if (currentConnectionConfig.DbType == DbType.Sql2K)
             {
-                return new SqlServerQueryBuilder();
+                return new Sql2KQueryBuilder();
             }
             else if (currentConnectionConfig.DbType == DbType.MySql)
             {
@@ -319,7 +319,7 @@ namespace SqlSugar
             }
             else if (currentConnectionConfig.DbType == DbType.Sql2K)
             {
-                return new SqlServerProvider();
+                return new Sql2KProvider();
             }
             else
             {
