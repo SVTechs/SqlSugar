@@ -282,6 +282,8 @@ namespace SqlSugar
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
                 this.InsertBuilder.TableWithString = lockString;
+            else if (this.Context.CurrentConnectionConfig.DbType == DbType.Sql2K)
+                this.InsertBuilder.TableWithString = lockString;
             return this;
         }
         public IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false) {
@@ -319,7 +321,7 @@ namespace SqlSugar
         {
             PreToSql();
             var currentType = this.Context.CurrentConnectionConfig.DbType;
-            Check.Exception(currentType != DbType.SqlServer, "UseSqlServer no support " + currentType);
+            Check.Exception(currentType != DbType.SqlServer && currentType != DbType.Sql2K, "UseSqlServer no support " + currentType);
             SqlServerBlukCopy result = new SqlServerBlukCopy();
             result.DbColumnInfoList =this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             result.InsertBuilder = this.InsertBuilder;

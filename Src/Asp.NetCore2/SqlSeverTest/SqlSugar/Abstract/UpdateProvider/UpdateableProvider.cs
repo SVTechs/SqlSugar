@@ -87,6 +87,8 @@ namespace SqlSugar
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
                 this.UpdateBuilder.TableWithString = lockString;
+            else if (this.Context.CurrentConnectionConfig.DbType == DbType.Sql2K)
+                this.UpdateBuilder.TableWithString = lockString;
             return this;
         }
         public SplitTableUpdateProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc)
@@ -423,7 +425,7 @@ namespace SqlSugar
 
         private bool UpdateObjectNotWhere()
         {
-            return this.Context.CurrentConnectionConfig.DbType != DbType.MySql && this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer;
+            return this.Context.CurrentConnectionConfig.DbType != DbType.MySql && this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer && this.Context.CurrentConnectionConfig.DbType != DbType.Sql2K;
         }
 
         private void AppendSets()

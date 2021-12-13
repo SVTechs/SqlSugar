@@ -381,6 +381,8 @@ namespace SqlSugar
                 case DbType.Oscar:
                     DependencyManagement.TryOscar();
                     break;
+                case DbType.Sql2K:
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }

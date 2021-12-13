@@ -164,6 +164,10 @@ namespace SqlSugar
                         {
                             andString.AppendFormat("\"{0}\"={1} ", primaryField,$"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
                         }
+                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.Sql2K && entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
+                        {
+                            andString.AppendFormat("\"{0}\"={1} ", primaryField, $"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
+                        }
                         else
                         {
                             andString.AppendFormat(tempequals, primaryField, entityValue);
@@ -387,6 +391,8 @@ namespace SqlSugar
         public IDeleteable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+                DeleteBuilder.TableWithString = lockString;
+            else if (this.Context.CurrentConnectionConfig.DbType == DbType.Sql2K)
                 DeleteBuilder.TableWithString = lockString;
             return this;
         }

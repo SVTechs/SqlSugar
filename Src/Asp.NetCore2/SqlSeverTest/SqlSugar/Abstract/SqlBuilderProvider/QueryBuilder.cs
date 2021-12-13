@@ -550,6 +550,10 @@ namespace SqlSugar
                 {
                     result = result + " AS columnName";
                 }
+                else if (expression is LambdaExpression && (expression as LambdaExpression).Body is MethodCallExpression && this.Context.CurrentConnectionConfig.DbType == DbType.Sql2K && this.OrderByValue.HasValue())
+                {
+                    result = result + " AS columnName";
+                }
                 this.SelectCacheKey = result;
                 return result;
             }

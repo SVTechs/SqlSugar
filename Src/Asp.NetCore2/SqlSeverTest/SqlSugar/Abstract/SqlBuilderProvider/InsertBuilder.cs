@@ -168,6 +168,10 @@ namespace SqlSugar
                 {
                     result += "select @@identity;";
                 }
+                else if (this.Context.CurrentConnectionConfig.DbType == DbType.Sql2K)
+                {
+                    result += "select @@identity;";
+                }
                 return result;
             }
         }

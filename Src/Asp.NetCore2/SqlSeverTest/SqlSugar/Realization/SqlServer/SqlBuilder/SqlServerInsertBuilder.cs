@@ -59,6 +59,10 @@ namespace SqlSugar
                 {
                     result += "select SCOPE_IDENTITY();";
                 }
+                else if (this.Context.CurrentConnectionConfig.DbType == DbType.Sql2K)
+                {
+                    result += "select SCOPE_IDENTITY();";
+                }
                 return result;
             }
         }

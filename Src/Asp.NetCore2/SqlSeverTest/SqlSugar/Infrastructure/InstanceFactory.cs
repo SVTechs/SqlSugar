@@ -25,6 +25,10 @@ namespace SqlSugar
             {
                 return new SqlServerQueryable<T>();
             }
+            else if (currentConnectionConfig.DbType == DbType.Sql2K)
+            {
+                return new SqlServerQueryable<T>();
+            }
             else  if (currentConnectionConfig.DbType == DbType.MySql)
             {
                 return new MySqlQueryable<T>();
@@ -47,6 +51,10 @@ namespace SqlSugar
             {
                 return new SqlServerQueryable<T, T2>();
             }
+            else if (currentConnectionConfig.DbType == DbType.Sql2K)
+            {
+                return new SqlServerQueryable<T, T2>();
+            }
             else
             {
                 string className = "Queryable";
@@ -58,6 +66,10 @@ namespace SqlSugar
         public static ISugarQueryable<T, T2, T3> GetQueryable<T, T2, T3>(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerQueryable<T, T2, T3>();
+            }
+            else if (currentConnectionConfig.DbType == DbType.Sql2K)
             {
                 return new SqlServerQueryable<T, T2, T3>();
             }
@@ -144,6 +156,10 @@ namespace SqlSugar
             {
                 return new SqlServerQueryBuilder();
             }
+            else if (currentConnectionConfig.DbType == DbType.Sql2K)
+            {
+                return new SqlServerQueryBuilder();
+            }
             else if (currentConnectionConfig.DbType == DbType.MySql)
             {
                 return new MySqlQueryBuilder();
@@ -172,7 +188,7 @@ namespace SqlSugar
 
         public static ILambdaExpressions GetLambdaExpressions(ConnectionConfig currentConnectionConfig)
         {
-            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            if (currentConnectionConfig.DbType == DbType.SqlServer || currentConnectionConfig.DbType == DbType.Sql2K)
             {
                 return new SqlServerExpressionContext();
             }
@@ -190,6 +206,10 @@ namespace SqlSugar
         public static ISqlBuilder GetSqlbuilder(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerBuilder();
+            }
+            else if (currentConnectionConfig.DbType == DbType.Sql2K)
             {
                 return new SqlServerBuilder();
             }
@@ -258,6 +278,10 @@ namespace SqlSugar
             {
                 return new SqlServerDbBind();
             }
+            else if (currentConnectionConfig.DbType == DbType.Sql2K)
+            {
+                return new SqlServerDbBind();
+            }
             else if (currentConnectionConfig.DbType == DbType.MySql)
             {
                 return new MySqlDbBind();
@@ -290,6 +314,10 @@ namespace SqlSugar
         public static IAdo GetAdo(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerProvider();
+            }
+            else if (currentConnectionConfig.DbType == DbType.Sql2K)
             {
                 return new SqlServerProvider();
             }

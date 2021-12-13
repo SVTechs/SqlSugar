@@ -29,6 +29,8 @@ namespace SqlSugar
                     break;
                 case DbType.Oscar:
                     break;
+                case DbType.Sql2K:
+                    return new SqlServerFastBuilder();
                 default:
                     break;
             }

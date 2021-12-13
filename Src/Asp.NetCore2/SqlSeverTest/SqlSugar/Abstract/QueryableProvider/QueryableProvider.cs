@@ -175,6 +175,10 @@ namespace SqlSugar
             {
                 QueryBuilder.TableWithString = withString;
             }
+            else if (this.Context.CurrentConnectionConfig.DbType == DbType.Sql2K)
+            {
+                QueryBuilder.TableWithString = withString;
+            }
             return this;
         }
 
@@ -1249,6 +1253,10 @@ namespace SqlSugar
             {
                 return this.ToPageList(pageIndex, pageSize);
             }
+            else if (this.Context.CurrentConnectionConfig.DbType != DbType.Sql2K)
+            {
+                return this.ToPageList(pageIndex, pageSize);
+            }
             else
             {
                 _ToOffsetPage(pageIndex, pageSize);
@@ -1258,6 +1266,10 @@ namespace SqlSugar
         public List<T> ToOffsetPage(int pageIndex, int pageSize, ref int totalNumber) 
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return this.ToPageList(pageIndex, pageSize, ref totalNumber);
+            }
+            else if (this.Context.CurrentConnectionConfig.DbType != DbType.Sql2K)
             {
                 return this.ToPageList(pageIndex, pageSize, ref totalNumber);
             }
@@ -1274,6 +1286,10 @@ namespace SqlSugar
             {
                 return this.ToPageListAsync(pageIndex, pageSize);
             }
+            else if (this.Context.CurrentConnectionConfig.DbType != DbType.Sql2K)
+            {
+                return this.ToPageListAsync(pageIndex, pageSize);
+            }
             else
             {
                 _ToOffsetPage(pageIndex, pageSize);
@@ -1283,6 +1299,10 @@ namespace SqlSugar
         public async Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber) 
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
+            }
+            else if (this.Context.CurrentConnectionConfig.DbType != DbType.Sql2K)
             {
                 return await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
             }
