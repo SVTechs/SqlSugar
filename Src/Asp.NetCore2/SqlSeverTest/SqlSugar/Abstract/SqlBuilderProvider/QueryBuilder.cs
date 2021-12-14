@@ -560,7 +560,9 @@ namespace SqlSugar
         }
         public virtual string GetPk()
         {
-            var pkColumn = this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.FirstOrDefault(x => x.IsPrimarykey);
+            var pkColumn = Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.FirstOrDefault(x => x.IsIdentity);
+            if (pkColumn != null) return pkColumn.DbColumnName;
+            pkColumn = Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.FirstOrDefault(x => x.IsPrimarykey);
             return pkColumn?.DbColumnName;
         }
         public virtual string GetSelectValueByString()

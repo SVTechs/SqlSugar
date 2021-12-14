@@ -36,7 +36,7 @@ namespace SqlSugar
             var tableName = GetTableNameString;
             var isFirst = (Skip == 0 || Skip == null) && Take == 1 && DisableTop == false;
             var isRowNumber = (Skip != null || Take != null) && !isFirst;
-            var rowNumberString = $" and ({pkColumn} not in (select top {Skip} id from {tableName} {GetWhereValueString} {GetOrderByString})) ";
+            var rowNumberString = $" and ({pkColumn} not in (select top {Skip} {pkColumn} from {tableName} {GetWhereValueString} {GetOrderByString})) ";
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.HasValue()) ? GetOrderByString : null;
             if (isIgnoreOrderBy) { orderByValue = null; }
