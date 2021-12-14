@@ -59,6 +59,7 @@ namespace SqlSugar
             }
             */
             this.OrderByValue = oldOrderBy;
+            if (!isFirst) result += oldOrderBy;
             if (!string.IsNullOrEmpty(this.Offset))
             {
                 if (this.OrderByValue.IsNullOrEmpty())

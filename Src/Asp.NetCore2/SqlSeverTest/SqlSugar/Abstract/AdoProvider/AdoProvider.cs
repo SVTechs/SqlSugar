@@ -401,6 +401,8 @@ namespace SqlSugar
             string tempSql = sql;
             while (tempSql.Contains(")")) tempSql = tempSql.Replace(")", " ");
             while (tempSql.Contains(",")) tempSql = tempSql.Replace(",", " ");
+            while (tempSql.Contains("+")) tempSql = tempSql.Replace("+", " ");
+            while (tempSql.Contains("-")) tempSql = tempSql.Replace("-", " ");
             var matches = Regex.Matches(tempSql, "@[^\\s]*");
             for (int i = 0; i < matches.Count; i++)
             {
